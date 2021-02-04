@@ -1,0 +1,213 @@
+<html>
+               <p>
+		O Allah, increase us in knowledge. Amen.
+		</p>
+		<p>
+			<canvas id="micanvas" width="200" height="320">
+			If you are reading this message, I am sorry to say your browser doesn't support
+			this awesome app. Upgrade it or something like that.
+			
+			</canvas>
+		</p>
+		<p>
+		Having trouble recognizing the different forms of the Arabic letter?<br/>
+		Familiarize yourself with the connected Arabic words with this app.<br/>
+		You are presented with a connected Arabic word, and the aim is to identify<br/> 
+		each letter.<br/>
+		</p>
+		<p>
+		Get the Android version of this app
+		</p>
+<script>
+  /* © 2012 hahaha hhhhh:)
+dear peeps who want to copy this nooby app
+if you are reading this, then dont be a noob like me and learn to program your own stuff
+Maeda H
+ */ 
+ var counter = 1;
+ var height;
+ var width;
+ var canvas;
+ var index; //this ones holds the word
+ var message="";
+ var arabic = new Array( 
+		"\u0627", "\u0628", "\u062A", "\u062B", "\u062C",
+		"\u062D", "\u062E", "\u062F", "\u0630", "\u0631",
+		"\u0632", "\u0633", "\u0634", "\u0635", "\u0636",
+		"\u0637", "\u0638", "\u0639", "\u063A", "\u0641",
+		"\u0642", "\u0643", "\u0644", "\u0645", "\u0646",
+		"\u0648", "\u0647", "\uFE80", "\u064A"
+	  );
+  //draw the images
+var alphabet = new Image();
+
+
+  window.onload = init;
+function init() {
+	
+	//generate word
+	index = generateWord();
+	
+	//handle clicks 
+	canvas = document.getElementById("micanvas");
+	height = canvas.height;
+	width  = canvas.width;
+	if(!canvas.getContext){
+		//no canvas support
+		alert("No canvas support!!!");
+	}
+	canvas.addEventListener('click', clickHandler);
+  
+        alphabet.src = "alphabet.bmp";
+	draw();
+}
+function draw(){
+	context = canvas.getContext("2d");
+	context.fillStyle = "black";
+	context.fillRect(0,0,canvas.width, canvas.height);
+  //
+	//draw the messages
+	context.fillStyle = "blue";
+	context.fillRect(0,0,canvas.width, 20);
+	context.fillStyle = "white";
+	context.font = "1em arial";
+	if(counter==1){
+		context.fillText("What is the first letter?", 10,15, 200);  
+	}else if(counter==2){
+		context.fillText("What is the second letter?", 10,15, 200);  
+	}else{
+		context.fillText("What is the third letter?", 10,15, 200);  
+	}
+	
+	context.fillStyle = "lightgray";
+	context.font = "1em arial";
+	context.fillText(message, 140,70, 200);  
+		
+	
+	
+alphabet.onload = function(){
+		context.drawImage(alphabet, 0, 80, 200, 240);
+	};
+	context.drawImage(alphabet, 0, 80, 200, 240);
+	
+	
+	
+	
+	context.font = "bold 2em sans-serif";
+	context.fillStyle = "lightgray";
+	context.fillText(arabic[index[0]]+arabic[index[1]]+arabic[index[2]]+"", 75,60, 200);  
+	
+                  //
+	
+}
+
+
+ 
+ function randomNumber(seed) {
+	seed = seed || 10;
+	return Math.floor(Math.random() * seed + 1);
+}
+
+function generateWord(){
+	//generate a random word	
+	return new Array(randomNumber(28), randomNumber(28), randomNumber(28));
+	
+}
+
+function clickHandler(event) {
+	var x = Math.floor((event.clientX - canvas.offsetLeft) / (width/ 5));
+	var y = Math.floor((event.clientY - canvas.offsetTop) / (height/ 8));
+  alert(x+" "+y+" "+map(x, y));
+	var letterIndex = map(x, y);
+	loop(letterIndex);
+}
+
+function loop(letterIndex){
+	if(letterIndex!=-1){
+		//process the click
+		//check if it is equal with the letter
+		if(letterIndex==index[counter-1]){
+			//alert("Correct!");
+			//drawMessage("Correct!");
+			message = "Correct!";
+		}else{
+			//alert("The correct letter is:"+arabic[index[counter-1]]);
+			//drawMessage("It is:"+arabic[index[counter-1]]);
+			message = "It is "+arabic[index[counter-1]];
+		}
+		counter++;
+		if(counter>=4){//generate a new word
+			index = generateWord();
+			counter=1;
+		}
+		draw();
+	}
+}
+
+
+function map(x, y){
+	if(x==4 && y==2)
+		return 0;
+	else if(x==3 && y==2)
+		return 1;
+	else if(x==2 && y==2)
+		return 2;
+	else if(x==1 && y==2)
+		return 3;
+	else if(x==0 && y==2)
+		return 4;
+	else if(x==4 && y==3)
+		return 5;
+	else if(x==3 && y==3)
+		return 6;
+	else if(x==2 && y==3)
+		return 7;
+	else if(x==1 && y==3)
+		return 8;
+	else if(x==0 && y==3)
+		return 9;
+	else if(x==4 && y==4)
+		return 10;
+	else if(x==3 && y==4)
+		return 11;
+	else if(x==2 && y==4)
+		return 12;
+	else if(x==1 && y==4)
+		return 13;
+	else if(x==0 && y==4)
+		return 14;
+	else if(x==4 && y==5)
+		return 15;
+	else if(x==3 && y==5)
+		return 16;
+	else if(x==2 && y==5)
+		return 17;
+	else if(x==1 && y==5)
+		return 18;
+	else if(x==0 && y==5)
+		return 19;
+	else if(x==4 && y==6)
+		return 20;
+	else if(x==3 && y==6)
+		return 21;
+	else if(x==2 && y==6)
+		return 22;
+	else if(x==1 && y==6)
+		return 23;
+	else if(x==0 && y==6)
+		return 24;
+	else if(x==4 && y==7)
+		return 25;
+	else if(x==3 && y==7)
+		return 26;
+	else if(x==2 && y==7)
+		return 27;
+	else if((x==1 && y==7) || (x==0 && y==7))
+		return 28;
+	else 
+		return -1;
+		
+	return 0;
+}
+</script>
+</html>

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Maeda's Awesome HTML Script</title>
+		<meta charset="utf-8">
+		<style>
+			canvas {
+				border: 1px solid black;
+			}
+		</style>		
+	</head>	
+	<body>
+		
+		<p>
+			<canvas id="micanvas" width="400" height="400">
+			If you are reading this message, I am sorry to say your browser doesn't support
+			this awesome app. Upgrade it or something like that.
+			
+			</canvas>
+		</p>
+		<p>
+		MAEDA'S APP TEST HERE<br>
+		</p>
+		<p>
+		Get the Android version of this app
+		</p>
+		<script type="text/javascript">
+			window.onload = init;
+			var text = "";
+			var prev="";
+			var index = 0;
+			var image;
+			var xmlDoc;
+			var States = new Array("MENU","QUIZ", "STORY");
+			var currState = States[0];
+			var score=0;
+			
+			function init() {
+				//handle clicks 
+				canvas = document.getElementById("micanvas");
+				height = canvas.height;
+				width  = canvas.width;
+				if(!canvas.getContext){
+					//no canvas support
+					alert("No canvas support!!!");
+				}
+				canvas.addEventListener('click', clickHandler);
+				
+				readXML();
+				
+				draw();
+			}
+			function loadXMLDoc(XMLname){
+				var xmlDoc;
+				if (window.XMLHttpRequest){
+					xmlDoc=new window.XMLHttpRequest();
+					xmlDoc.open("GET",XMLname,false);
+					xmlDoc.send("");
+					return xmlDoc.responseXML;
+				}	// IE 5 and IE 6
+				else if (ActiveXObject("Microsoft.XMLDOM")){
+					xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+					xmlDoc.async=false;
+					xmlDoc.load(XMLname);
+					return xmlDoc;
+				}
+				alert("Error loading document!");
+				return null;
+			}
+			function readXML(){
+				if(currState=="STORY" || currState=="QUIZ"){
+					if(index==0){
+						xmlDoc=loadXMLDoc("yusuf5.xml");// Path to the XML file;
+						//initialize the image variable
+						image = "bluedecoration.jpg";
+						return;
+					}
+					var x=xmlDoc.documentElement.childNodes;
+					prev=text;
+					//text="";
+					do{
+						//alert("YYA ISAND AD WORKING");
+						if (x[index].nodeType==1){//Process only element nodes (type 1)
+							if(x[index].nodeName==("narrate") || x[index].nodeName==("answer")){
+								
+								text = (x[index].nodeName+" "+x[index].childNodes[0].nodeValue);
+								//return;
+							}
+							if(x[index].nodeName=="image")
+							image=xmlDoc.getElementsByTagName("image")[index].childNodes[0].nodeValue;
+						}
+						index++;
+					}while(text==prev);
+					
+					/*if(xmlDoc.getElementsByTagName("narrate"))
+						text = xmlDoc.getElementsByTagName("narrate")[index].childNodes[0].nodeValue;
+					else if(xmlDoc.getElementsByTagName("answer"))
+						text = xmlDoc.getElementsByTagName("answer")[index].childNodes[0].nodeValue;
+					if(xmlDoc.getElementsByTagName("image"))
+						image=xmlDoc.getElementsByTagName("image")[index].childNodes[0].nodeValue;*/
+					//alert(M);
+					//for (i=0;i<M.length;i++){
+						
+						//document.write("<div style='width:450px;'>")
+						//document.write("<h2>"+xmlDoc.getElementsByTagName("title")[i].childNodes[0].nodeValue+"</h2>");
+						//document.write("<p>"+xmlDoc.getElementsByTagName("description")[i].childNodes[0].nodeValue+"</p>");
+						//document.write("<p><a href='"+ xmlDoc.getElementsByTagName("url")[i].childNodes[0].nodeValue+"' target='_blank'>" +xmlDoc.getElementsByTagName("urltext")[i].childNodes[0].nodeValue+"</a></p>");
+						//document.write("</div>")
+					//}
+				}
+			}
+			function clickHandler(event) {
+				var x = Math.floor((event.clientX - canvas.offsetLeft) / (width/ 6));
+				var y = Math.floor((event.clientY - canvas.offsetTop) / (height/ 5));
+				//alert(x+" "+y+" ");
+
+				if(currState=="STORY" || currState=="QUIZ"){
+					index++;
+					readXML();
+					draw();
+				}else if(currState=="MENU"){
+				//check which button it clicked
+					if(y==1){//it is a  story
+						currState="STORY";
+						index=0;
+						readXML();
+						draw();
+					}else if(y==2){//it is a  quiz
+						currState="QUIZ";
+						index=0;
+						score=0;
+						readXML();
+						draw();
+					}
+				}
+
+			}
+			function draw(){
+				context = canvas.getContext("2d");
+				//context.fillStyle = "black";
+				//context.fillRect(0,0,canvas.width, canvas.height);
+				if(currState=="STORY" || currState=="QUIZ"){
+					context.fillStyle = "black";
+					context.fillRect(0,0,canvas.width, canvas.height);
+					//draw the images
+					var alphabet = new Image();
+					alphabet.src = image;
+					var parchment = new Image();
+					parchment.src = "parchment.png";
+					
+					alphabet.onload = function(){
+						context.drawImage(alphabet, 0, 0, canvas.width, canvas.height-canvas.height/4);
+						//};
+						//parchment.onload = function(){
+							context.drawImage(parchment, 0, canvas.height-canvas.height/4, canvas.width, canvas.height/4);
+						//};
+					
+						context.fillStyle = "lightgray";
+						context.font = "1em arial";
+						//var lines = truncateString(text);
+						//alert(lines[0]);
+						
+						
+						//for(int t=0; t < lines.length;t++){
+						t=0;
+						context.fillText(text, 10,(canvas.height-canvas.height/4+20), 375);  
+						
+						//}
+						if(currState=="QUIZ"){
+							//draw the score
+							context.fillStyle = "blue";
+							context.fillRect(0,15,canvas.width, 25);
+							context.fillStyle = "lightgray";
+							context.font = "1em arial";
+							context.fillText("Score:"+score, 30,30, 375);  
+						}
+					};
+				}else if(currState=="MENU"){
+					var background  = new Image();
+					background.src = "bluedecoration.jpg";	
+					background.onload = function(){
+						context.drawImage(background, 0, 0, canvas.width, canvas.height);
+						
+						var choice  = new Image();
+						choice.src = "choicebutton.png";					
+						context.drawImage(choice, canvas.width/6, canvas.height/5, canvas.width*2/3, canvas.height*1/5-5);
+						context.drawImage(choice, canvas.width/6, canvas.height*2/5, canvas.width*2/3, canvas.height*1/5-5);
+						
+						
+						context.font = "bold 4em verdana";
+						context.fillStyle = "lightgreen";
+						context.fillText("Prophet Yusuf a.s.", 30,60, 300); 
+						context.font = "bold 3em verdana";
+						context.fillText("Story", canvas.width/6+60,canvas.height/5+50, 300); 
+						context.fillText("Quiz", canvas.width/6+60,canvas.height*2/5+50, 300); 
+					
+					}
+				}
+				
+				
+				
+				
+				
+			}
+			
+			function truncateString(string){
+			//max 45 chars in a line
+				//the word array created
+				var word = string.split(" ");
+				var truncate = new Array();
+				var line = "";
+				var maxnumofchar = 45;
+				var truncateIndex=0;
+				
+				if(string.length<maxnumofchar){
+					return new Array(string);
+				}
+				
+				//create word array
+				for(var i = 0;i<word.length;i++){
+					//bar[i] = bar[i].split("@");
+					if(word.length+line.length<maxnumofchar){
+						line = line +word[i];
+					}else{//else add the line into truncated and make a new line
+						//System.out.println("line:"+line);
+						truncate[truncateIndex] = line;
+						truncateIndex++;
+						line = ""+word+" ";
+				
+					}
+					
+				}
+				
+				if(truncate.length<0){
+					if(truncated[truncated.length-1] !=line)	{
+						truncated[truncatedIndex] = line;
+						//System.out.println("line added:"+line);
+					}
+				}
+				return truncate;
+			}
+		</script>
+	</body>
+</html>

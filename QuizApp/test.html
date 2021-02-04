@@ -1,0 +1,58 @@
+<html>
+<script type="text/javascript">
+function loadXMLDoc(XMLname){
+				var xmlDoc;
+				if (window.XMLHttpRequest){
+					xmlDoc=new window.XMLHttpRequest();
+					xmlDoc.open("GET",XMLname,false);
+					xmlDoc.send("");
+					return xmlDoc.responseXML;
+				}	// IE 5 and IE 6
+				else if (ActiveXObject("Microsoft.XMLDOM")){
+					xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+					xmlDoc.async=false;
+					xmlDoc.load(XMLname);
+					return xmlDoc;
+				}
+				alert("Error loading document!");
+				return null;
+			}
+			
+
+var xmlDoc=loadXMLDoc("yusuf5.xml");
+
+			k=xmlDoc.getElementsByTagName("question")[1].childNodes;
+			y=xmlDoc.getElementsByTagName("question")[1].firstChild;
+alert(k.length);
+			for (i=0;i<k.length;i++){
+				if (y.nodeType==1){//Process only element nodes (type 1)
+					document.write(y.nodeName + y.childNodes[0].nodeValue+"<br />");
+				}
+				y=y.nextSibling;
+			}
+			
+x=xmlDoc.documentElement.childNodes;
+
+for (i=0;i<x.length;i++){
+	if (x[i].nodeType==1 ){//Process only element nodes (type 1)
+	
+		document.write(x[i].nodeName+" "+x[i].childNodes[0].nodeValue);
+		if(x[i].nodeName=="question"){
+			/*k=xmlDoc.getElementsByTagName("question")[0].childNodes;
+			y=xmlDoc.getElementsByTagName("question")[0].firstChild;
+
+			for (i=0;i<k.length;i++){
+				if (y.nodeType==1){//Process only element nodes (type 1)
+					document.write(y.nodeName + "<br />");
+				}
+				y=y.nextSibling;
+			}*/
+		}
+		document.write("<br />");
+	}
+}
+
+
+
+</script>
+</html>
